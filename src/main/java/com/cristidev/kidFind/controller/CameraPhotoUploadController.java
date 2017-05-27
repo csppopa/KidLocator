@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -22,6 +24,9 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristidev.kidFind.exception.StorageFileNotFoundException;
+import com.cristidev.kidFind.model.Coordinates;
+import com.cristidev.kidFind.model.LocationMap;
+import com.cristidev.kidFind.model.Picture;
 import com.cristidev.kidFind.service.StorageService;
 
 @RestController
@@ -30,6 +35,9 @@ public class CameraPhotoUploadController {
 	@Autowired
 	@Qualifier("camera")
 	private StorageService storageService;
+
+	@Autowired
+	private LocationMap locationMap;
 
 	@GetMapping("/camera")
 	public String listUploadedFiles(Model model) throws IOException {
@@ -42,7 +50,7 @@ public class CameraPhotoUploadController {
 
 		return "uploadForm";
 	}
-	
+
 	@GetMapping("/camera/files/{filename:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
@@ -53,13 +61,16 @@ public class CameraPhotoUploadController {
 				.body(file);
 	}
 
-	@PostMapping("/camera")
-	public void handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+	@PostMapping("/camera/{x}/{y}")
+	public void handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+			@PathParam(value = "x") String x, @PathParam(value = "y") String y) {
 
 		storageService.store(file);
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 
+		locationMap.addPicture(new Picture(new Coordinates(Double.valueOf(x), Double.valueOf(y)),
+				new File("upload-dir/" + file.getOriginalFilename()).getAbsolutePath()));
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

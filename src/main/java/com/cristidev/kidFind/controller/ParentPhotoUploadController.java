@@ -1,5 +1,6 @@
 package com.cristidev.kidFind.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -21,33 +22,33 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristidev.kidFind.exception.StorageFileNotFoundException;
+import com.cristidev.kidFind.model.Coordinates;
 import com.cristidev.kidFind.service.FacesService;
 import com.cristidev.kidFind.service.StorageService;
+
+import okhttp3.Response;
 
 @RestController
 public class ParentPhotoUploadController {
 
 	@Autowired
-	@Qualifier("parent") 
+	@Qualifier("parent")
 	private StorageService storageService;
 
 	@Autowired
 	private FacesService facesService;
 
-	
 	@GetMapping("/parent")
 	public String listUploadedFiles(Model model) throws IOException {
 
-		model.addAttribute("files",
-				storageService.loadAll()
-						.map(path -> MvcUriComponentsBuilder
-								.fromMethodName(ParentPhotoUploadController.class, "serveFile", path.getFileName().toString())
-								.build().toString())
-						.collect(Collectors.toList()));
+		model.addAttribute("files", storageService.loadAll()
+				.map(path -> MvcUriComponentsBuilder
+						.fromMethodName(ParentPhotoUploadController.class, "serveFile", path.getFileName().toString())
+						.build().toString())
+				.collect(Collectors.toList()));
 
 		return "uploadForm";
 	}
-	
 
 	@GetMapping("/parent/files/{filename:.+}")
 	@ResponseBody
@@ -59,24 +60,15 @@ public class ParentPhotoUploadController {
 				.body(file);
 	}
 
-	@PostMapping("/parent")
-	public void handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+	@PostMapping(value = "/parent", produces="application/json")
+	@ResponseBody
+	public Coordinates handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
 		storageService.store(file);
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 		
-		//request to detect the faces, don't delete, it's a model
-		/*
-		File pic = new File("upload-dir/parentPhoto.jpg");
-		Response response = facesService.sendDetectRequest(pic);
-		if (response.isSuccessful()) {
-			System.out.println("success");
-			return response.body().string();
-		} else {
-			System.out.println("error");
-			return "error";
-		}
-		*/
+		Coordinates resultCoordinates = facesService.searchFaceRequest(new File("upload-dir/parentPhoto.jpg"));
+		return resultCoordinates;
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

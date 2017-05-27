@@ -28,16 +28,13 @@ public class ParentStorageService implements StorageService {
 		this.rootLocation = Paths.get(properties.getLocation());
 	}
 
-	static int counter = 0;
-
 	@Override
 	public void store(MultipartFile file) {
 		try {
-			counter++;
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
 			}
-			Files.copy(file.getInputStream(), this.rootLocation.resolve("parentPhoto" + counter + ".jpg"));
+			Files.copy(file.getInputStream(), this.rootLocation.resolve("parentPhoto.jpg"));
 		} catch (IOException e) {
 			throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
 		}
