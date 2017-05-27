@@ -6,10 +6,15 @@ import java.util.stream.Collectors;
 
 import javax.websocket.server.PathParam;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,9 +34,17 @@ import com.cristidev.kidFind.model.LocationMap;
 import com.cristidev.kidFind.model.Picture;
 import com.cristidev.kidFind.service.StorageService;
 
+import okhttp3.Request;
+import okhttp3.RequestBody;
+
 @RestController
 public class CameraPhotoUploadController {
 
+	private static final String NOTIFICATION_TOPIC = "/topics/hackTmKidLocator";
+	private static final String NOTIFICATION_URL = "https://fcm.googleapis.com/fcm/send";
+	private static final String ANDROID_NOTIFICATIONS_API_KEY = "key= AIzaSyAIKs2qVYf8wWGOZlWCH9dZK0lXy9SeFyI";
+	private final OkHttpClient client = new OkHttpClient();
+	
 	@Autowired
 	@Qualifier("camera")
 	private StorageService storageService;
@@ -72,9 +85,25 @@ public class CameraPhotoUploadController {
 		locationMap.addPicture(new Picture(new Coordinates(Double.valueOf(x), Double.valueOf(y)),
 				new File("upload-dir/" + file.getOriginalFilename()).getAbsolutePath()));
 	}
+	
+	@PostMapping("/cameras/notify")
+	public void notifyCameras() throws JSONException, IOException {
+		JSONObject request = new JSONObject();
+		request.put("to", NOTIFICATION_TOPIC);
+		request.put("data", new JSONObject());
+		request.getJSONObject("data").put("message", "vasile");
+		
+		Request httpRequest = new Request.Builder()
+				.url(NOTIFICATION_URL)
+				.header("Authorization", ANDROID_NOTIFICATIONS_API_KEY)
+				.header("Content-Type", "application/json")
+				.method("POST", RequestBody.create(MediaType.parse("application/json"), request.toString()))
+				.build();
+		client.newCall(httpRequest).execute();
+	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)
-	public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
+	public ResponseEntity<Void> handleStorageFileNotFound(StorageFileNotFoundException exc) {
 		return ResponseEntity.notFound().build();
 	}
 
