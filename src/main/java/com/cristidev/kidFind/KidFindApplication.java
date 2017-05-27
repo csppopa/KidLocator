@@ -7,7 +7,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 import com.cristidev.kidFind.configuration.StorageProperties;
-import com.cristidev.kidFind.service.StorageService;
+import com.cristidev.kidFind.service.CameraStorageService;
+import com.cristidev.kidFind.service.ParentStorageService;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
@@ -18,10 +19,14 @@ public class KidFindApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(StorageService storageService) {
+	CommandLineRunner init(CameraStorageService camera, ParentStorageService parent) {
 		return (args) -> {
-			storageService.deleteAll();
-			storageService.init();
+			camera.deleteAll();
+			camera.init();
+
+			parent.deleteAll();
+			parent.init();
+
 		};
 	}
 }
