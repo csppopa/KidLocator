@@ -21,11 +21,11 @@
 				document.getElementById("marker").style.left = "" + (x * 640) + "px";
 				document.getElementById("marker").style.left = "" + (y * 480) + "px";
 			} else {
-				document.getElementById("message").innerText = "Your child was not found.";
-				document.getElementById("title").innerText = "Not found";
-				document.getElementById("title").style.color = "red";
-				document.getElementById("success").style.visibility="hidden";
-				document.getElementById("marker").style.visibility="hidden";
+// 				document.getElementById("message").innerText = "Your child was not found.";
+// 				document.getElementById("title").innerText = "Not found";
+// 				document.getElementById("title").style.color = "red";
+// 				document.getElementById("success").style.visibility="hidden";
+// 				document.getElementById("marker").style.visibility="hidden";
 			}
 		}
 	</script>
@@ -41,7 +41,7 @@
 	<div id="title" style="width:60%;font-size:60px;font-family:Archivo Black;margin:0 auto;padding-top:20px;text-align:center;color:#2DC249">Success</div>
 	<div>
 		<p style="font-family:Arial;font-size:30px;font-weight:400;text-align:center;padding:0;margin:0;border:0"><span id="message" >Your child is here:</span></p>
-		<div style="position:relative;width:640px;height:480px;border:1px solid black;margin:0 auto">
+		<div style="position:relative;width:640px;height:480px;border:1px solid #CACACA;margin:0 auto">
 		<img src="floorplan.jpg" style="width:640px;height:480px;opacity:0.5"></img>
 		<div id="marker" style="position:absolute;width:160px;height:32px;left:320px;top:240px">
 			<text style="font-family:Arial;font-size:10pt;font-weight:bold">Your child is here.</text>
@@ -53,6 +53,7 @@
 			</svg>
 		</div>
 		<div style="position:absolute;top:485px;margin-left:320px"><a href="parentPost.html">back</a></div>
+	</div>
 	</div>
 </form>
 
