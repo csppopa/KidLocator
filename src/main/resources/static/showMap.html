@@ -2,33 +2,47 @@
 <html>
 
 <head>
+	<link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
 	<script>
 		function placeMarker() {
-			
-			var position = JSON.parse(document.cookie["coordinates"]);
-			var x = position.x;
-			var y = position.y;
-			document.getElementById("marker").style.left = "" + (x * 640) + "px";
-			document.getElementById("marker").style.left = "" + (y * 480) + "px";
+			if (document.cookie["coordinates"]) {
+				var position = JSON.parse(document.cookie["coordinates"]);
+				var x = position.x;
+				var y = position.y;
+				document.getElementById("marker").style.left = "" + (x * 640) + "px";
+				document.getElementById("marker").style.left = "" + (y * 480) + "px";
+			} else {
+				document.getElementById("message").innerText = "Your child was not found.";
+				document.getElementById("title").innerText = "Not found";
+				document.getElementById("title").style.color = "red";
+				document.getElementById("success").style.visibility="hidden";
+			}
 		}
 	</script>
 </head>
 
-<body>
+<body onload="placeMarker()" style="background-color:#EBE7E0">
 
 <form action="/parent" enctype="multipart/form-data" method="post" >
- 	<table style="width:800px">
-		<tr colspan=2><td>Map:</td></tr>
-		<tr colspan=2><td><div style="position:relative;width:640px;height:480px;border:1px solid black">
-			<div id="marker" style="position:absolute;width:32px;height:32px;left:320px;top:240px">
-			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Search around here!">
-				<circle cx="15" cy="15" r="10" style="fill:none;stroke:red;stroke-width:2"/>
+	<div id="success" style="width:150px;height:150px;margin:0 auto;">
+		<img src="success.svg" style="width:150px;height:150px;"></img>
+	</div>
+	
+	<div id="title" style="width:60%;font-size:60px;font-family:Archivo Black;margin:0 auto;padding-top:20px;text-align:center;color:#2DC249">Success</div>
+	<div>
+		<p style="font-family:Arial;font-size:30px;font-weight:400;text-align:center;padding:0;margin:0;border:0"><span id="message" >Your child is here:</span></p>
+		<div style="position:relative;width:640px;height:480px;border:1px solid black;margin:0 auto">
+		<img src="floorplan.jpg" style="width:640px;height:480px"></img>
+		<div id="marker" style="position:absolute;width:32px;height:32px;left:110px;top:20px">
+			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Search around here!"/>
+				<circle cx="15" cy="15" r="10" style="fill:none;stroke:red;stroke-width:8">
+				<circle cx="15" cy="15" r="10" style="fill:white;stroke:none;stroke-width:2"/>
 				<line x1="15" y1="0" x2="15" y2="31" stroke-width="0.5" stroke="black"/>
 				<line x1="0" y1="15" x2="31" y2="15" stroke-width="0.5" stroke="black"/>
-			</svg></div>
-		</div></td></tr>
-		<tr><td><a href="parentPost.html">back</a></td></tr>
-	</table>
+			</svg>
+		</div>
+		<div style="position:absolute;top:485px;margin-left:320px"><a href="parentPost.html">back</a></div>
+	</div>
 </form>
 
 </body>
