@@ -76,7 +76,7 @@ public class CameraPhotoUploadController {
 
 	@PostMapping("/camera/{x}/{y}")
 	public void handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
-			@PathParam(value = "x") String x, @PathParam(value = "y") String y) {
+			@PathVariable(value = "x") String x, @PathVariable(value = "y") String y) {
 
 		storageService.store(file);
 		redirectAttributes.addFlashAttribute("message",
