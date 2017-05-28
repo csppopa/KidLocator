@@ -12,10 +12,11 @@
 				document.getElementById("marker").style.left = "" + (x * 640) + "px";
 				document.getElementById("marker").style.left = "" + (y * 480) + "px";
 			} else {
-// 				document.getElementById("message").innerText = "Your child was not found.";
-// 				document.getElementById("title").innerText = "Not found";
-// 				document.getElementById("title").style.color = "red";
-// 				document.getElementById("success").style.visibility="hidden";
+				document.getElementById("message").innerText = "Your child was not found.";
+				document.getElementById("title").innerText = "Not found";
+				document.getElementById("title").style.color = "red";
+				document.getElementById("success").style.visibility="hidden";
+				document.getElementById("marker").style.visibility="hidden";
 			}
 		}
 	</script>
@@ -32,9 +33,10 @@
 	<div>
 		<p style="font-family:Arial;font-size:30px;font-weight:400;text-align:center;padding:0;margin:0;border:0"><span id="message" >Your child is here:</span></p>
 		<div style="position:relative;width:640px;height:480px;border:1px solid black;margin:0 auto">
-		<img src="floorplan.jpg" style="width:640px;height:480px;opacity:0.3"></img>
-		<div id="marker" style="position:absolute;width:32px;height:32px;left:320px;top:240px">
-			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Search around here!">
+		<img src="floorplan.jpg" style="width:640px;height:480px;opacity:0.5"></img>
+		<div id="marker" style="position:absolute;width:160px;height:32px;left:320px;top:240px">
+			<text style="font-family:Arial;font-size:10pt;font-weight:bold">Your child is here.</text>
+			<svg viewBox="0 0 160 32" xmlns="http://www.w3.org/2000/svg" title="Search around here!">
 				<circle cx="15" cy="15" r="10" style="fill:none;stroke:red;stroke-width:8" />
 				<circle cx="15" cy="15" r="10" style="fill:white;stroke:none;stroke-width:2"/>
 				<line x1="15" y1="0" x2="15" y2="31" stroke-width="0.5" stroke="black"/>
