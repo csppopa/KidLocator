@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -62,13 +65,22 @@ public class ParentPhotoUploadController {
 
 	@PostMapping(value = "/parent", produces="application/json")
 	@ResponseBody
-	public Coordinates handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+	public ResponseEntity<Void> handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException, JSONException {
 		storageService.store(file);
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 		
 		Coordinates resultCoordinates = facesService.searchFaceRequest(new File("upload-dir/parentPhoto.jpg"));
-		return resultCoordinates;
+		
+		JSONObject cookie = new JSONObject();
+		cookie.put("x", resultCoordinates.x);
+		cookie.put("y", resultCoordinates.y);
+		
+		ResponseEntity<Void> response = ResponseEntity
+				.status(HttpStatus.TEMPORARY_REDIRECT)
+				.header("Set-Cookie", "coordinates=" + cookie.toString())
+				.header("Location", "showMap.html").build();
+		return response;
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

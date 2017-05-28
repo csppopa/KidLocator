@@ -27,9 +27,9 @@ public class FacesService {
 	@Autowired
 	private LocationMap locationMap;
 
-	protected static final String API_KEY = "e218cbcffde843e4a2a9a19b25099215";
+	protected static final String API_KEY = "beaecff178cb440fbabfc2c7389fcaa1";
 
-	protected static final String API_SEC = "5c0f97545b2d4421ac6bcd7c2cddf72a";
+	protected static final String API_SEC = "1500d4d8135e4e8faf70398e5483b25a";
 
 	protected static final String DETECT_URL = "http://api.skybiometry.com/fc/faces/detect.json?";
 
@@ -37,7 +37,7 @@ public class FacesService {
 
 	protected static final String SAVE_TAG_URL = "http://api.skybiometry.com/fc/tags/save.json?";
 
-	protected static final String NAMESPACE = "@workws";
+	protected static final String NAMESPACE = "@cucubau";
 
 	private final OkHttpClient client = new OkHttpClient();
 
@@ -103,7 +103,7 @@ public class FacesService {
 		RequestBody requestBody = new FormBody.Builder().add("api_key", API_KEY).add("api_sec", API_SEC)
 				.add("uid", uid + NAMESPACE).add("tids", tid).build();
 
-		Request request = new Request.Builder().url(DETECT_URL).method("POST", RequestBody.create(null, new byte[0]))
+		Request request = new Request.Builder().url(SAVE_TAG_URL).method("POST", RequestBody.create(null, new byte[0]))
 				.post(requestBody).build();
 
 		return request;
