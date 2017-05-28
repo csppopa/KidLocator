@@ -27,9 +27,9 @@ public class FacesService {
 	@Autowired
 	private LocationMap locationMap;
 
-	protected static final String API_KEY = "beaecff178cb440fbabfc2c7389fcaa1";
+	protected static final String API_KEY = "a8757337d416479dac3a2252c28915ef";
 
-	protected static final String API_SEC = "1500d4d8135e4e8faf70398e5483b25a";
+	protected static final String API_SEC = "3f6b677a53e04d7cac356306f335a7c9";
 
 	protected static final String DETECT_URL = "http://api.skybiometry.com/fc/faces/detect.json?";
 
@@ -37,7 +37,7 @@ public class FacesService {
 
 	protected static final String SAVE_TAG_URL = "http://api.skybiometry.com/fc/tags/save.json?";
 
-	protected static final String NAMESPACE = "@cucubau";
+	protected static final String NAMESPACE = "@hacktm2017";
 
 	private final OkHttpClient client = new OkHttpClient();
 
@@ -64,14 +64,14 @@ public class FacesService {
 			Request secondRequest = generateSecondRequest(uid, tid);
 			Response secondResponse = client.newCall(secondRequest).execute();
 			JSONObject secondJson = new JSONObject(secondResponse.body().string());
-			if (!secondJson.getString("status").equals("succes")) {
+			if (!"success".equals(secondJson.getString("status"))) {
 				throw new IOException("tag save failed");
 			}
 			for (Picture picture : locationMap.pictures) {
 				Request thirdRequest = generateThirdRequest(uid, picture.filePath);
 				Response newResponse = client.newCall(thirdRequest).execute();
-				JSONObject recognitionResult = new JSONObject(response.body().string());
-				if (!recognitionResult.getString("status").equals("succes")) {
+				JSONObject recognitionResult = new JSONObject(newResponse.body().string());
+				if (!"success".equals(recognitionResult.getString("status"))) {
 					System.out.println("recognition failed for: " + picture.filePath);
 					break;
 				}
@@ -100,11 +100,10 @@ public class FacesService {
 	}
 
 	private Request generateSecondRequest(String uid, String tid) {
-		RequestBody requestBody = new FormBody.Builder().add("api_key", API_KEY).add("api_sec", API_SEC)
+		RequestBody requestBody = new FormBody.Builder().add("api_key", API_KEY).add("api_secret", API_SEC)
 				.add("uid", uid + NAMESPACE).add("tids", tid).build();
 
-		Request request = new Request.Builder().url(SAVE_TAG_URL).method("POST", RequestBody.create(null, new byte[0]))
-				.post(requestBody).build();
+		Request request = new Request.Builder().url(SAVE_TAG_URL).post(requestBody).build();
 
 		return request;
 	}
