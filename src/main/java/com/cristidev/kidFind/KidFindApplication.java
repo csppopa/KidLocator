@@ -21,11 +21,11 @@ public class KidFindApplication {
 	@Bean
 	CommandLineRunner init(CameraStorageService camera, ParentStorageService parent) {
 		return (args) -> {
-			camera.deleteAll();
-			camera.init();
+//			camera.deleteAll();
+//			camera.init();
 
-			parent.deleteAll();
-			parent.init();
+//			parent.deleteAll();
+//			parent.init();
 
 		};
 	}

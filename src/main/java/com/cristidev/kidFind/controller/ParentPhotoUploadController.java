@@ -63,24 +63,32 @@ public class ParentPhotoUploadController {
 				.body(file);
 	}
 
-	@PostMapping(value = "/parent", produces="application/json")
+	@PostMapping(value = "/parent", produces="text/html")
 	@ResponseBody
-	public ResponseEntity<Void> handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException, JSONException {
+	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException, JSONException {
 		storageService.store(file);
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 		
 		Coordinates resultCoordinates = facesService.searchFaceRequest(new File("upload-dir/parentPhoto.jpg"));
-		
-		JSONObject cookie = new JSONObject();
-		cookie.put("x", resultCoordinates.x);
-		cookie.put("y", resultCoordinates.y);
-		
-		ResponseEntity<Void> response = ResponseEntity
-				.status(HttpStatus.TEMPORARY_REDIRECT)
-				.header("Set-Cookie", "coordinates=" + cookie.toString())
-				.header("Location", "showMap.html").build();
-		return response;
+
+		System.out.println(resultCoordinates);
+		JSONObject cookie = null;
+		if (resultCoordinates != null) {
+			cookie = new JSONObject();
+			cookie.put("x", resultCoordinates.x);
+			cookie.put("y", resultCoordinates.y);
+		}
+
+		String redirect = "<html><head><script>window.location.href='showMap.html'</script></head></html>";
+
+		ResponseEntity.BodyBuilder response = ResponseEntity
+				.status(HttpStatus.OK);
+		if (cookie != null) {
+				response.header("Set-Cookie", "coordinates=" + cookie.toString());
+		}
+
+		return response.body(redirect);
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

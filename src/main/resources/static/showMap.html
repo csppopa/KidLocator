@@ -5,10 +5,19 @@
 	<link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
 	<script>
 		function placeMarker() {
-			if (document.cookie["coordinates"]) {
-				var position = JSON.parse(document.cookie["coordinates"]);
+			var position;
+			if (document.cookie) {
+                var cookies = document.cookie.split(";");
+                for (index in cookies) {
+                    if (cookies[index].startsWith("coordinates=")) {
+                        position = JSON.parse(cookies[index].substr(12, 1000));
+                    }
+                }
+            }
+            if(position) {
 				var x = position.x;
 				var y = position.y;
+				console.log(position);
 				document.getElementById("marker").style.left = "" + (x * 640) + "px";
 				document.getElementById("marker").style.left = "" + (y * 480) + "px";
 			} else {
@@ -26,7 +35,7 @@
 
 <form action="/parent" enctype="multipart/form-data" method="post" >
 	<div id="success" style="width:150px;height:150px;margin:0 auto;">
-		<img src="success.svg" style="width:150px;height:150px;"></img>
+		<img src="success.svg" style="width:150px;height:150px;" />
 	</div>
 	
 	<div id="title" style="width:60%;font-size:60px;font-family:Archivo Black;margin:0 auto;padding-top:20px;text-align:center;color:#2DC249">Success</div>

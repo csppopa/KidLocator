@@ -92,9 +92,9 @@ public class FacesService {
 		File photo = new File(filePath);
 		RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
 				.addFormDataPart("api_key", API_KEY).addFormDataPart("api_secret", API_SEC)
-				.addFormDataPart("attributes", "all")
+				.addFormDataPart("uids", uid + NAMESPACE)
 				.addFormDataPart("file", photo.getName(), RequestBody.create(MediaType.parse("image"), photo)).build();
-		Request request = new Request.Builder().url(RECOGNIZE_URL).method("POST", RequestBody.create(null, new byte[0]))
+		Request request = new Request.Builder().url(RECOGNIZE_URL)
 				.post(requestBody).build();
 		return request;
 	}
